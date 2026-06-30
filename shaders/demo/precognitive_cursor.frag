@@ -36,7 +36,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     vec2 pred = predict(uPredictionModel, m, v, a, uLeadTime);
-    float conf = predictionConfidence(v * res, uLeadTime);
+    float conf = predictionConfidence(v, uLeadTime);
 
     vec2 mp = vec2(m.x * aspect, m.y);
     vec2 pp = vec2(pred.x * aspect, pred.y);

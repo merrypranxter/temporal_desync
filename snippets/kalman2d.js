@@ -53,11 +53,23 @@ export class Kalman2D {
     this.x[0] += Kpx * yx; this.x[2] += Kvx * yx;
     this.x[1] += Kpy * yy; this.x[3] += Kvy * yy;
 
-    // Covariance update (diagonal-ish approximation, axis-decoupled).
-    this.P[0]  *= (1 - Kpx);
-    this.P[5]  *= (1 - Kpy);
-    this.P[8]  *= (1 - Kpx);
-    this.P[13] *= (1 - Kpy);
+    // Covariance update P = (I - K H) P, axis-decoupled and exact.
+    // Crucially this also shrinks the velocity variance (P[10], P[15]) via the
+    // cross terms — without it the process noise added each predict step grows
+    // the velocity variance without bound, which eventually blows up the
+    // position covariance and pins ghost opacity to 0.
+    const P0 = this.P[0], P2 = this.P[2], P8 = this.P[8], P10 = this.P[10];
+    const P5 = this.P[5], P7 = this.P[7], P13 = this.P[13], P15 = this.P[15];
+
+    this.P[0]  = (1 - Kpx) * P0;
+    this.P[2]  = (1 - Kpx) * P2;
+    this.P[8]  = (1 - Kpx) * P8;
+    this.P[10] = P10 - Kvx * P2;
+
+    this.P[5]  = (1 - Kpy) * P5;
+    this.P[7]  = (1 - Kpy) * P7;
+    this.P[13] = (1 - Kpy) * P13;
+    this.P[15] = P15 - Kvy * P7;
   }
 
   // Extrapolate the estimate `lead` seconds ahead.

@@ -21,7 +21,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 p = vec2((fragCoord.x / res.y), fragCoord.y / res.y); // y-normalized
 
     const int N = 10;
-    float spacing = aspect / float(N + 1);
     float baseY = 0.35;
 
     float period = 4.0;

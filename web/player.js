@@ -123,6 +123,10 @@ class Player {
     gl.attachShader(p, fs);
     gl.bindAttribLocation(p, 0, "aPos");
     gl.linkProgram(p);
+    // The program retains its own copy after linking; flag the shader objects
+    // for deletion so switching shaders doesn't leak them on the GPU.
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
     if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
       throw new Error(gl.getProgramInfoLog(p));
     }

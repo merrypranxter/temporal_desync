@@ -28,7 +28,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     vec2 ghostPos = predict(uPredictionModel, m, v, a, uLeadTime);
-    float conf = predictionConfidence(v * res, uLeadTime);
+    float conf = predictionConfidence(v, uLeadTime);
 
     float aspect = res.x / res.y;
     vec2 p = vec2(uv.x * aspect, uv.y);
