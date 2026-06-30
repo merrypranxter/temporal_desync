@@ -1,0 +1,13 @@
+# dependencies / build (none required, but keep tidy)
+node_modules/
+dist/
+.cache/
+
+# editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# logs
+*.log

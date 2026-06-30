@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>temporal_desync — effect before cause</title>
+<style>
+  :root { --bg:#08090d; --panel:#0e1018; --line:#1d2230; --ink:#c8d2e0; --accent:#5aa0ff; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font: 13px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  #app { display: grid; grid-template-columns: 300px 1fr; height: 100%; }
+  #side { background: var(--panel); border-right: 1px solid var(--line);
+    padding: 16px; overflow-y: auto; }
+  h1 { font-size: 15px; margin: 0 0 2px; letter-spacing: .04em; }
+  .sub { color: #6c7689; margin: 0 0 16px; font-size: 11px; }
+  label { display: block; margin: 14px 0 4px; color: #93a0b4; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; }
+  select, input[type=range] { width: 100%; }
+  select { background: #11141d; color: var(--ink); border: 1px solid var(--line);
+    padding: 6px; border-radius: 4px; }
+  .row { display:flex; justify-content: space-between; align-items: baseline; }
+  .val { color: var(--accent); font-variant-numeric: tabular-nums; }
+  button { background:#161a26; color:var(--ink); border:1px solid var(--line);
+    padding:6px 10px; border-radius:4px; cursor:pointer; margin-top:14px; }
+  button:hover { border-color: var(--accent); }
+  #stagewrap { position: relative; }
+  canvas#gl { width: 100%; height: 100%; display: block; cursor: crosshair; }
+  #status { position:absolute; left:10px; bottom:10px; color:#6c7689; font-size:11px;
+    max-width: 80%; }
+  .err { color:#ff7b7b; white-space: pre-wrap; background:#1a0e10; padding:8px;
+    border:1px solid #3a1a1e; border-radius:4px; max-height:50vh; overflow:auto; }
+  footer { margin-top: 20px; color:#5a6478; font-size: 10px; border-top:1px solid var(--line);
+    padding-top: 12px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side">
+    <h1>temporal_desync</h1>
+    <p class="sub">output leads input · effect before cause</p>
+
+    <label for="shaderSelect">shader</label>
+    <select id="shaderSelect"></select>
+
+    <label class="row" for="lead">lead_time <span class="val" id="leadVal"></span></label>
+    <input type="range" id="lead" min="0" max="1.5" step="0.01" value="0.35" />
+
+    <label for="model">prediction_model</label>
+    <select id="model">
+      <option value="0">0 — linear</option>
+      <option value="1">1 — quadratic</option>
+      <option value="2" selected>2 — damped</option>
+    </select>
+
+    <label class="row" for="offset">temporal_offset <span class="val" id="offsetVal"></span></label>
+    <input type="range" id="offset" min="0" max="1" step="0.01" value="0.25" />
+
+    <label class="row" for="inv">causal_inversion <span class="val" id="invVal"></span></label>
+    <input type="range" id="inv" min="0" max="1" step="0.01" value="1.0" />
+
+    <label class="row" for="deseq">desequence_factor <span class="val" id="deseqVal"></span></label>
+    <input type="range" id="deseq" min="0" max="1" step="0.01" value="0.0" />
+
+    <button id="pause">⏸ pause</button>
+
+    <footer>
+      Move the mouse over the canvas. The pale mark is <em>now</em>; the cold
+      ghost is the <em>prediction</em>. See <code>docs/architecture.md</code>.
+    </footer>
+  </aside>
+
+  <div id="stagewrap">
+    <canvas id="gl"></canvas>
+    <div id="status"></div>
+  </div>
+</div>
+<script type="module" src="web/player.js"></script>
+</body>
+</html>
